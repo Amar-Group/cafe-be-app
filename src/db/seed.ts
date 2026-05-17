@@ -17,14 +17,14 @@ const menuSeedData = [
   },
   {
     name: "Master Data",
-    path: "/master-data",
+    path: null,
     permissionPath: null,
     icon: null,
     parentName: null,
   },
   {
     name: "Web Management",
-    path: "/web-management",
+    path: null,
     permissionPath: null,
     icon: null,
     parentName: null,
@@ -82,7 +82,7 @@ async function seed() {
     console.log("Seeding users...");
     const adminPassword = await hash("password123", 10);
     const userPassword = await hash("password123", 10);
-    
+
     await db.insert(users).values([
       {
         email: "admin@example.com",
@@ -105,7 +105,7 @@ async function seed() {
       .values(
         parentMenus.map((menu) => ({
           name: menu.name,
-          path: menu.path,
+          path: menu.path!,
           permission_path: menu.permissionPath,
           icon: menu.icon,
           parent_id: null,
