@@ -43,6 +43,9 @@ cafe-be-app/
 │   │   ├── role/                   # CRUD role (struktur identik)
 │   │   ├── role_permission/        # CRUD role permission + RBAC query
 │   │   ├── upload/                 # Cloudinary signed upload (hanya controller + route)
+│   │   ├── cafe/                   # Domain Cafe (dish, category, order)
+│   │   ├── billiard/               # Domain Billiard (table, reservation)
+│   │   ├── payment/                # Manajemen pembayaran
 │   │   └── user/                   # User management, auth, navigation
 │   │       ├── contract/
 │   │       │   └── user.contract.ts
@@ -95,8 +98,9 @@ cafe-be-app/
 
 ## Database Schema
 
-4 tabel utama dengan relasi:
+Sistem menggunakan MySQL dengan tabel-tabel utama dibagi menjadi:
 
+**A. RBAC & Autentikasi (4 tabel inti)**
 ```
 ┌──────────────┐     ┌──────────────────┐
 │    roles     │     │      menus       │
@@ -132,6 +136,11 @@ cafe-be-app/
 - `menus.permission_path` berisi path API (contoh: `/api/roles`) yang digunakan oleh `permission.ts` middleware untuk mencocokkan permission secara dinamis
 - `menus.parent_id` mendukung hierarki menu (parent → children) untuk sidebar navigation
 - `role_permissions` menghubungkan role ke menu dengan 5 flag aksi: `can_read`, `can_create`, `can_update`, `can_delete`, `can_report`
+
+**B. Domain Data (10 Tabel Baru)**
+- **Cafe**: `dish_categories`, `dishes`, `dish_images`, `dish_orders`, `dish_order_details`
+- **Billiard**: `billiard_table_types`, `billiard_tables`, `billiard_table_images`, `reservations`
+- **Transaction**: `payments`
 
 ---
 
@@ -343,6 +352,16 @@ Sistem dokumentasi terdiri dari 3 lapisan:
 | `POST` | `/api/role-permissions` | Create role permission |
 | `PUT` | `/api/role-permissions/{id}` | Update role permission |
 | `DELETE` | `/api/role-permissions/{id}` | Delete role permission |
+| `GET/POST/...` | `/api/dish-categories` | CRUD Dish Categories |
+| `GET/POST/...` | `/api/dishes` | CRUD Dishes |
+| `GET/POST/...` | `/api/dish-images` | CRUD Dish Images |
+| `GET/POST/...` | `/api/dish-orders` | CRUD Dish Orders |
+| `GET/POST/...` | `/api/dish-order-details` | CRUD Dish Order Details |
+| `GET/POST/...` | `/api/billiard-table-types` | CRUD Billiard Table Types |
+| `GET/POST/...` | `/api/billiard-tables` | CRUD Billiard Tables |
+| `GET/POST/...` | `/api/billiard-table-images` | CRUD Billiard Table Images |
+| `GET/POST/...` | `/api/reservations` | CRUD Reservations |
+| `GET/POST/...` | `/api/payments` | CRUD Payments |
 | `POST` | `/api/uploads/signature` | Generate Cloudinary signed upload params |
 
 ### Protected (JWT + AppToken, tanpa Permission check)
@@ -367,6 +386,19 @@ Seeder (`src/db/seed.ts`) membuat data awal:
   - Web Management `/web-management`
     - Menu `/web-management/menus` → permission_path: `/api/menus`
     - Role Permission `/web-management/role-permissions` → permission_path: `/api/role-permissions`
+  - Cafe Management `/cafe`
+    - Dish Categories `/cafe/dish-categories` → permission_path: `/api/dish-categories`
+    - Dishes `/cafe/dishes` → permission_path: `/api/dishes`
+    - Dish Images `/cafe/dish-images` → permission_path: `/api/dish-images`
+    - Dish Orders `/cafe/dish-orders` → permission_path: `/api/dish-orders`
+    - Dish Order Details `/cafe/dish-order-details` → permission_path: `/api/dish-order-details`
+  - Billiard Management `/billiard`
+    - Billiard Table Types `/billiard/table-types` → permission_path: `/api/billiard-table-types`
+    - Billiard Tables `/billiard/tables` → permission_path: `/api/billiard-tables`
+    - Billiard Table Images `/billiard/table-images` → permission_path: `/api/billiard-table-images`
+    - Reservations `/billiard/reservations` → permission_path: `/api/reservations`
+  - Transaction `/transaction`
+    - Payments `/transaction/payments` → permission_path: `/api/payments`
 - **Role Permissions**: Admin mendapat full access (semua `can_*` = true) ke semua menu
 
 ---
