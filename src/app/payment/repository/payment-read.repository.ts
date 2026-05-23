@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "../../../../db";
-import { payments, dish_orders, reservations } from "../../../../db/schema";
+import { db } from "../../../db";
+import { payments, dish_orders, reservations } from "../../../db/schema";
 
 export class PaymentReadRepository {
   static async getAll() {

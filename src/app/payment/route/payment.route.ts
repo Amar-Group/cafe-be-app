@@ -2,9 +2,9 @@ import { PaymentController } from "../controller/payment.controller";
 import {
   createModuleOpenApiDocument,
   createOpenApiRouter,
-  registerOpenApiRoute,
   registerDefaultSecuritySchemes,
-} from "../../../../docs/openapi-common";
+  registerOpenApiRoute
+} from "../../../docs/openapi-common";
 import {
   createPaymentRoute,
   deletePaymentRoute,
@@ -12,9 +12,10 @@ import {
   getPaymentByIdRoute,
   updatePaymentRoute,
 } from "./payment.openapi";
-import { appTokenMiddleware } from "../../../../middleware/appToken";
-import { jwtMiddleware } from "../../../../middleware/auth";
-import { requirePermission } from "../../../../middleware/permission";
+import { jwtMiddleware } from "../../../middleware/auth";
+import { appTokenMiddleware } from "../../../middleware/appToken";
+import { requirePermission } from "../../../middleware/permission";
+
 
 const router = createOpenApiRouter();
 

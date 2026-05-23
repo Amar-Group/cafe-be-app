@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "../../../../db";
-import { payments } from "../../../../db/schema";
+import { db } from "../../../db";
+import { payments } from "../../../db/schema";
 
 export class PaymentWriteRepository {
   static async create(data: any) {

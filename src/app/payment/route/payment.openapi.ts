@@ -5,7 +5,7 @@ import {
   jsonResponse,
   protectedSecurity,
   errorResponses,
-} from "../../../../docs/openapi-common";
+} from "../../../docs/openapi-common";
 import {
   createPaymentRequestSchema,
   updatePaymentRequestSchema,
