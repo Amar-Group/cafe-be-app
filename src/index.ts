@@ -63,6 +63,8 @@ app.get('/docs', apiReference({
   },
 }));
 
+app.route("/api/uploads", uploadRoutes);
+
 // API Routes - Feature based
 // Note: User routes have public login endpoint, others require JWT
 app.route('/api/users', userRoutes);

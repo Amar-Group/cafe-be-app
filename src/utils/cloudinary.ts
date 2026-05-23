@@ -52,7 +52,9 @@ export type CloudinarySignedUploadParams = {
   uploadUrl: string;
 };
 
-export function createSignedUploadParams(): CloudinarySignedUploadParams {
+export function createSignedUploadParams(
+  category?: "cafe" | "billiard"
+): CloudinarySignedUploadParams {
   const cloudinaryUrl = getCloudinaryUrl();
 
   if (!cloudinaryUrl) {
@@ -60,7 +62,8 @@ export function createSignedUploadParams(): CloudinarySignedUploadParams {
   }
 
   const config = parseCloudinaryUrl(cloudinaryUrl);
-  const folder = getCloudinaryFolder();
+  const baseFolder = getCloudinaryFolder();
+  const folder = category ? `${baseFolder}/${category}` : baseFolder;
   const timestamp = Math.floor(Date.now() / 1000);
   const signature = cloudinary.utils.api_sign_request(
     {

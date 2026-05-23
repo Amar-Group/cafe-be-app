@@ -1,4 +1,4 @@
-import { createRoute } from "@hono/zod-openapi";
+import { createRoute, z } from "@hono/zod-openapi";
 import {
   apiErrorResponseSchema,
   createSuccessEnvelopeSchema,
@@ -20,6 +20,11 @@ export const createUploadSignatureRoute = createRoute({
   tags: ["Uploads"],
   summary: "Create Cloudinary signed upload params",
   security: protectedSecurity,
+  request: {
+    query: z.object({
+      category: z.enum(["cafe", "billiard"]).optional(),
+    }),
+  },
   responses: {
     200: jsonResponse(
       uploadSignatureEnvelopeSchema,

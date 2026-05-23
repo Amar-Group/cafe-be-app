@@ -3,7 +3,8 @@ import { createSignedUploadParams } from "../../../utils/cloudinary";
 
 export class UploadController {
   static async createSignature(c: Context) {
-    const signedParams = createSignedUploadParams();
+    const query = c.req.valid("query" as never) as { category?: "cafe" | "billiard" };
+    const signedParams = createSignedUploadParams(query.category);
 
     return c.json({
       success: true,

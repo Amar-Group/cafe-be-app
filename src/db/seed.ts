@@ -84,6 +84,7 @@ const menuSeedData = [
     permissionPath: "/api/dish-images",
     icon: null,
     parentName: "Cafe Management",
+    isVisible: false,
   },
   {
     name: "Dish Orders",
@@ -98,6 +99,7 @@ const menuSeedData = [
     permissionPath: "/api/dish-order-details",
     icon: null,
     parentName: "Cafe Management",
+    isVisible: false,
   },
   {
     name: "Billiard Management",
@@ -126,6 +128,7 @@ const menuSeedData = [
     permissionPath: "/api/billiard-table-images",
     icon: null,
     parentName: "Billiard Management",
+    isVisible: false,
   },
   {
     name: "Reservations",
@@ -199,6 +202,7 @@ async function seed() {
           path: menu.path!,
           permission_path: menu.permissionPath,
           icon: menu.icon,
+          is_visible: (menu as any).isVisible ?? true,
           parent_id: null,
         })),
       )
@@ -219,6 +223,7 @@ async function seed() {
           path: menu.path,
           permission_path: menu.permissionPath,
           icon: menu.icon,
+          is_visible: (menu as any).isVisible ?? true,
           parent_id: parentMenuIdByName.get(menu.parentName as string) ?? null,
         })),
       )

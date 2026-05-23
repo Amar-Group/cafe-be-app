@@ -4,6 +4,7 @@ import {
   UpdateDishRequestDto,
 } from "../dto/dish-request.dto";
 import { DishService } from "../service/dish.service";
+import { deleteImageFromCloudinarySafely } from "../../../../utils/cloudinary";
 
 export class DishController {
   static async getAll(c: Context) {
@@ -48,10 +49,24 @@ export class DishController {
   static async update(c: Context) {
     const id = Number(c.req.param("id"));
     const body: UpdateDishRequestDto = await c.req.json();
+    
+    // Check if thumbnail changed
+    let oldPublicId: string | null = null;
+    if (body.thumbnail_public_id !== undefined) {
+      const existing = await DishService.getById(id);
+      if (existing && existing.thumbnail_public_id !== body.thumbnail_public_id) {
+        oldPublicId = existing.thumbnail_public_id;
+      }
+    }
+
     const updateResult = await DishService.update(id, body);
 
     if (!updateResult) {
       return c.json({ success: false, message: "Dish not found" }, 404);
+    }
+
+    if (oldPublicId) {
+      await deleteImageFromCloudinarySafely(oldPublicId);
     }
 
     return c.json({
@@ -63,10 +78,20 @@ export class DishController {
 
   static async delete(c: Context) {
     const id = Number(c.req.param("id"));
+    
+    const existing = await DishService.getById(id);
+    if (!existing) {
+      return c.json({ success: false, message: "Dish not found" }, 404);
+    }
+
     const deleteResult = await DishService.delete(id);
 
     if (!deleteResult) {
       return c.json({ success: false, message: "Dish not found" }, 404);
+    }
+
+    if (existing.thumbnail_public_id) {
+      await deleteImageFromCloudinarySafely(existing.thumbnail_public_id);
     }
 
     return c.json({
