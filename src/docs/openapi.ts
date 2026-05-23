@@ -3,6 +3,16 @@ import { getRoleOpenApiDocument } from "../app/role/route/role.route";
 import { getRolePermissionOpenApiDocument } from "../app/role_permission/route/role-permission.route";
 import { getUploadOpenApiDocument } from "../app/upload/route/upload.route";
 import { getUserOpenApiDocument } from "../app/user/route/user.route";
+import { getDishCategoryOpenApiDocument } from "../app/cafe/dish_category/route/dish-category.route";
+import { getDishOpenApiDocument } from "../app/cafe/dish/route/dish.route";
+import { getDishImageOpenApiDocument } from "../app/cafe/dish_image/route/dish-image.route";
+import { getDishOrderOpenApiDocument } from "../app/cafe/dish_order/route/dish-order.route";
+import { getDishOrderDetailOpenApiDocument } from "../app/cafe/dish_order_detail/route/dish-order-detail.route";
+import { getBilliardTableTypeOpenApiDocument } from "../app/billiard/billiard_table_type/route/billiard-table-type.route";
+import { getBilliardTableOpenApiDocument } from "../app/billiard/billiard_table/route/billiard-table.route";
+import { getBilliardTableImageOpenApiDocument } from "../app/billiard/billiard_table_image/route/billiard-table-image.route";
+import { getReservationOpenApiDocument } from "../app/billiard/reservation/route/reservation.route";
+import { getPaymentOpenApiDocument } from "../app/payment/route/payment.route";
 import type { SecurityRequirementObject } from "openapi3-ts/oas30";
 
 type OpenApiDocument = Record<string, any>;
@@ -137,6 +147,46 @@ function createBaseDocument(baseUrl: string): OpenApiDocument {
         name: "Uploads",
         description: "Cloudinary signed upload helpers",
       },
+      {
+        name: "Dish Categories",
+        description: "Dish category management",
+      },
+      {
+        name: "Dishes",
+        description: "Dish management",
+      },
+      {
+        name: "Dish Images",
+        description: "Dish image management",
+      },
+      {
+        name: "Dish Orders",
+        description: "Dish order management",
+      },
+      {
+        name: "Dish Order Details",
+        description: "Dish order detail management",
+      },
+      {
+        name: "Billiard Table Types",
+        description: "Billiard table type management",
+      },
+      {
+        name: "Billiard Tables",
+        description: "Billiard table management",
+      },
+      {
+        name: "Billiard Table Images",
+        description: "Billiard table image management",
+      },
+      {
+        name: "Reservations",
+        description: "Reservation management",
+      },
+      {
+        name: "Payments",
+        description: "Payment management",
+      },
     ],
     security: protectedSecurity,
     components: {
@@ -248,6 +298,16 @@ export function createOpenApiDocument(baseUrl: string) {
       "/api/role-permissions",
     ),
     mountOpenApiPaths(getUploadOpenApiDocument(baseUrl), "/api/uploads"),
+    mountOpenApiPaths(getDishCategoryOpenApiDocument(baseUrl), "/api/dish-categories"),
+    mountOpenApiPaths(getDishOpenApiDocument(baseUrl), "/api/dishes"),
+    mountOpenApiPaths(getDishImageOpenApiDocument(baseUrl), "/api/dish-images"),
+    mountOpenApiPaths(getDishOrderOpenApiDocument(baseUrl), "/api/dish-orders"),
+    mountOpenApiPaths(getDishOrderDetailOpenApiDocument(baseUrl), "/api/dish-order-details"),
+    mountOpenApiPaths(getBilliardTableTypeOpenApiDocument(baseUrl), "/api/billiard-table-types"),
+    mountOpenApiPaths(getBilliardTableOpenApiDocument(baseUrl), "/api/billiard-tables"),
+    mountOpenApiPaths(getBilliardTableImageOpenApiDocument(baseUrl), "/api/billiard-table-images"),
+    mountOpenApiPaths(getReservationOpenApiDocument(baseUrl), "/api/reservations"),
+    mountOpenApiPaths(getPaymentOpenApiDocument(baseUrl), "/api/payments"),
   ];
 
   return moduleDocuments.reduce(

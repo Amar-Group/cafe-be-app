@@ -8,6 +8,16 @@ import roleRoutes from './app/role/route/role.route';
 import menuRoutes from './app/menu/route/menu.route';
 import rolePermissionRoutes from './app/role_permission/route/role-permission.route';
 import uploadRoutes from './app/upload/route/upload.route';
+import dishCategoryRoutes from './app/cafe/dish_category/route/dish-category.route';
+import dishRoutes from './app/cafe/dish/route/dish.route';
+import dishImageRoutes from './app/cafe/dish_image/route/dish-image.route';
+import dishOrderRoutes from './app/cafe/dish_order/route/dish-order.route';
+import dishOrderDetailRoutes from './app/cafe/dish_order_detail/route/dish-order-detail.route';
+import billiardTableTypeRoutes from './app/billiard/billiard_table_type/route/billiard-table-type.route';
+import billiardTableRoutes from './app/billiard/billiard_table/route/billiard-table.route';
+import billiardTableImageRoutes from './app/billiard/billiard_table_image/route/billiard-table-image.route';
+import reservationRoutes from './app/billiard/reservation/route/reservation.route';
+import paymentRoutes from './app/payment/route/payment.route';
 import { apiReference } from '@scalar/hono-api-reference';
 import {
   createOpenApiDocument,
@@ -60,6 +70,16 @@ app.route('/api/roles', roleRoutes);
 app.route('/api/menus', menuRoutes);
 app.route('/api/role-permissions', rolePermissionRoutes);
 app.route('/api/uploads', uploadRoutes);
+app.route('/api/dish-categories', dishCategoryRoutes);
+app.route('/api/dishes', dishRoutes);
+app.route('/api/dish-images', dishImageRoutes);
+app.route('/api/dish-orders', dishOrderRoutes);
+app.route('/api/dish-order-details', dishOrderDetailRoutes);
+app.route('/api/billiard-table-types', billiardTableTypeRoutes);
+app.route('/api/billiard-tables', billiardTableRoutes);
+app.route('/api/billiard-table-images', billiardTableImageRoutes);
+app.route('/api/reservations', reservationRoutes);
+app.route('/api/payments', paymentRoutes);
 
 // Handlers
 app.notFound(notFoundHandler);
