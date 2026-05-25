@@ -108,12 +108,13 @@ Sistem menggunakan MySQL dengan tabel-tabel utama dibagi menjadi:
 │ id (PK)      │     │ id (PK)          │
 │ code (UQ)    │     │ name             │
 │ name         │     │ path             │
-│ created_at   │     │ permission_path  │ ← digunakan utk RBAC matching
-│ updated_at   │     │ icon             │
-└──────┬───────┘     │ parent_id (FK→id)│ ← self-referencing (hierarchical menu)
-       │             │ created_at       │
-       │             │ updated_at       │
-       │             └────────┬─────────┘
+│ path         │     │ permission_path  │ ← digunakan utk RBAC matching
+│ permission_path│   │ icon             │
+│ icon         │     │ is_visible       │ ← toggle tampilan di frontend sidebar
+│ parent_id (FK→id)│ │ parent_id (FK→id)│ ← self-referencing (hierarchical menu)
+│ created_at   │     │ created_at       │
+│ updated_at   │     │ updated_at       │
+└──────┬───────┘     └────────┬─────────┘
        │                      │
        ▼                      ▼
 ┌──────────────┐     ┌──────────────────┐
@@ -139,6 +140,7 @@ Sistem menggunakan MySQL dengan tabel-tabel utama dibagi menjadi:
 
 **B. Domain Data (10 Tabel Baru)**
 - **Cafe**: `dish_categories`, `dishes`, `dish_images`, `dish_orders`, `dish_order_details`
+  - *Catatan: Pembaruan data pada `dish_order_details` (tambah/hapus) akan secara otomatis mengkalkulasi ulang field `total`, `tax_amount`, `service_fee_amount`, dan `nett_price` pada tabel induk `dish_orders` melalui logic Service Layer.*
 - **Billiard**: `billiard_table_types`, `billiard_tables`, `billiard_table_images`, `reservations`
 - **Transaction**: `payments`
 
@@ -389,13 +391,13 @@ Seeder (`src/db/seed.ts`) membuat data awal:
   - Cafe Management `/cafe`
     - Dish Categories `/cafe/dish-categories` → permission_path: `/api/dish-categories`
     - Dishes `/cafe/dishes` → permission_path: `/api/dishes`
-    - Dish Images `/cafe/dish-images` → permission_path: `/api/dish-images`
+    - Dish Images `/cafe/dish-images` → permission_path: `/api/dish-images` *(is_visible: false - tersembunyi dari navigasi, hanya untuk cek RBAC di Modal Galeri)*
     - Dish Orders `/cafe/dish-orders` → permission_path: `/api/dish-orders`
-    - Dish Order Details `/cafe/dish-order-details` → permission_path: `/api/dish-order-details`
+    - Dish Order Details `/cafe/dish-order-details` → permission_path: `/api/dish-order-details` *(is_visible: false - nested di menu Orders)*
   - Billiard Management `/billiard`
     - Billiard Table Types `/billiard/table-types` → permission_path: `/api/billiard-table-types`
     - Billiard Tables `/billiard/tables` → permission_path: `/api/billiard-tables`
-    - Billiard Table Images `/billiard/table-images` → permission_path: `/api/billiard-table-images`
+    - Billiard Table Images `/billiard/table-images` → permission_path: `/api/billiard-table-images` *(is_visible: false)*
     - Reservations `/billiard/reservations` → permission_path: `/api/reservations`
   - Transaction `/transaction`
     - Payments `/transaction/payments` → permission_path: `/api/payments`
