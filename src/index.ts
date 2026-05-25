@@ -17,6 +17,7 @@ import billiardTableTypeRoutes from './app/billiard/billiard_table_type/route/bi
 import billiardTableRoutes from './app/billiard/billiard_table/route/billiard-table.route';
 import billiardTableImageRoutes from './app/billiard/billiard_table_image/route/billiard-table-image.route';
 import reservationRoutes from './app/billiard/reservation/route/reservation.route';
+import scheduleRoutes from './app/billiard/schedule/route/schedule.route';
 import paymentRoutes from './app/payment/route/payment.route';
 import { apiReference } from '@scalar/hono-api-reference';
 import {
@@ -81,6 +82,7 @@ app.route('/api/billiard-table-types', billiardTableTypeRoutes);
 app.route('/api/billiard-tables', billiardTableRoutes);
 app.route('/api/billiard-table-images', billiardTableImageRoutes);
 app.route('/api/reservations', reservationRoutes);
+app.route('/api/schedules', scheduleRoutes);
 app.route('/api/payments', paymentRoutes);
 
 // Handlers

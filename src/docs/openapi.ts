@@ -12,6 +12,7 @@ import { getBilliardTableTypeOpenApiDocument } from "../app/billiard/billiard_ta
 import { getBilliardTableOpenApiDocument } from "../app/billiard/billiard_table/route/billiard-table.route";
 import { getBilliardTableImageOpenApiDocument } from "../app/billiard/billiard_table_image/route/billiard-table-image.route";
 import { getReservationOpenApiDocument } from "../app/billiard/reservation/route/reservation.route";
+import { getScheduleOpenApiDocument } from "../app/billiard/schedule/route/schedule.route";
 import { getPaymentOpenApiDocument } from "../app/payment/route/payment.route";
 import type { SecurityRequirementObject } from "openapi3-ts/oas30";
 
@@ -184,6 +185,10 @@ function createBaseDocument(baseUrl: string): OpenApiDocument {
         description: "Reservation management",
       },
       {
+        name: "Schedules",
+        description: "Schedule management",
+      },
+      {
         name: "Payments",
         description: "Payment management",
       },
@@ -307,6 +312,7 @@ export function createOpenApiDocument(baseUrl: string) {
     mountOpenApiPaths(getBilliardTableOpenApiDocument(baseUrl), "/api/billiard-tables"),
     mountOpenApiPaths(getBilliardTableImageOpenApiDocument(baseUrl), "/api/billiard-table-images"),
     mountOpenApiPaths(getReservationOpenApiDocument(baseUrl), "/api/reservations"),
+    mountOpenApiPaths(getScheduleOpenApiDocument(baseUrl), "/api/schedules"),
     mountOpenApiPaths(getPaymentOpenApiDocument(baseUrl), "/api/payments"),
   ];
 

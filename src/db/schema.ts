@@ -244,6 +244,15 @@ export const billiard_table_images = mysqlTable(
   })
 );
 
+// Schedules Table
+export const schedules = mysqlTable("schedules", {
+  id: int().primaryKey().autoincrement(),
+  start_time: time().notNull(),
+  end_time: time().notNull(),
+  created_at: datetime().default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updated_at: datetime().default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 // Reservations Table
 export const reservations = mysqlTable(
   "reservations",
@@ -253,8 +262,7 @@ export const reservations = mysqlTable(
     guest_name: varchar({ length: 100 }).notNull(),
     guest_phone: varchar({ length: 20 }).notNull(),
     date: date().notNull(),
-    start_time: time().notNull(),
-    end_time: time().notNull(),
+    schedule_id: int().notNull(),
     guest_count: int().notNull(),
     notes: text(),
     status: mysqlEnum(["pending", "confirmed", "preparing", "completed", "cancelled"])
@@ -267,6 +275,10 @@ export const reservations = mysqlTable(
     table_fk: foreignKey({
       columns: [table.billiard_table_id],
       foreignColumns: [billiard_tables.id],
+    }),
+    schedule_fk: foreignKey({
+      columns: [table.schedule_id],
+      foreignColumns: [schedules.id],
     }),
   })
 );

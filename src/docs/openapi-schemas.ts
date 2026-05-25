@@ -413,6 +413,22 @@ export const billiardTableImageSchema = z
   })
   .openapi("BilliardTableImage");
 
+export const scheduleSchema = z
+  .object({
+    id: z.number().int().openapi({
+      example: 1,
+    }),
+    start_time: z.string().openapi({
+      example: "10:00:00",
+    }),
+    end_time: z.string().openapi({
+      example: "11:00:00",
+    }),
+    created_at: timestampSchema,
+    updated_at: timestampSchema,
+  })
+  .openapi("Schedule");
+
 export const reservationSchema = z
   .object({
     id: z.number().int().openapi({
@@ -430,11 +446,8 @@ export const reservationSchema = z
     date: z.string().openapi({
       example: "2024-05-20",
     }),
-    start_time: z.string().openapi({
-      example: "18:00:00",
-    }),
-    end_time: z.string().openapi({
-      example: "20:00:00",
+    schedule_id: z.number().int().openapi({
+      example: 1,
     }),
     guest_count: z.number().int().openapi({
       example: 4,
@@ -454,6 +467,13 @@ export const reservationSchema = z
         slug: z.string().nullable().openapi({ example: "table-01" }),
         price: z.string().nullable().openapi({ example: "50000.00" }),
         thumbnail: z.string().nullable().openapi({ example: "https://res.cloudinary.com/xxx/image.jpg" }),
+      })
+      .nullable(),
+    schedule: z
+      .object({
+        id: z.number().int().nullable().openapi({ example: 1 }),
+        start_time: z.string().nullable().openapi({ example: "18:00:00" }),
+        end_time: z.string().nullable().openapi({ example: "20:00:00" }),
       })
       .nullable(),
   })
@@ -516,8 +536,7 @@ export const paymentSchema = z
         guest_name: z.string().nullable().openapi({ example: "Jane Doe" }),
         guest_phone: z.string().nullable().openapi({ example: "089876543210" }),
         date: z.string().nullable().openapi({ example: "2024-05-20" }),
-        start_time: z.string().nullable().openapi({ example: "18:00:00" }),
-        end_time: z.string().nullable().openapi({ example: "20:00:00" }),
+        schedule_id: z.number().int().nullable().openapi({ example: 1 }),
       })
       .nullable(),
   })

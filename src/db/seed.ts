@@ -130,6 +130,13 @@ const menuSeedData = [
     parentName: "Billiard Management",
     isVisible: false,
   },
+    {
+    name: "Schedules",
+    path: "/billiard/schedules",
+    permissionPath: "/api/schedules",
+    icon: null,
+    parentName: "Billiard Management",
+  },
   {
     name: "Reservations",
     path: "/billiard/reservations",

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../../../db";
-import { reservations, billiard_tables } from "../../../../db/schema";
+import { reservations, billiard_tables, schedules } from "../../../../db/schema";
 
 export class ReservationReadRepository {
   static async getAll() {
@@ -12,8 +12,7 @@ export class ReservationReadRepository {
           guest_name: reservations.guest_name,
           guest_phone: reservations.guest_phone,
           date: reservations.date,
-          start_time: reservations.start_time,
-          end_time: reservations.end_time,
+          schedule_id: reservations.schedule_id,
           guest_count: reservations.guest_count,
           notes: reservations.notes,
           status: reservations.status,
@@ -26,9 +25,15 @@ export class ReservationReadRepository {
             price: billiard_tables.price,
             thumbnail: billiard_tables.thumbnail,
           },
+          schedule: {
+            id: schedules.id,
+            start_time: schedules.start_time,
+            end_time: schedules.end_time,
+          },
         })
         .from(reservations)
-        .leftJoin(billiard_tables, eq(reservations.billiard_table_id, billiard_tables.id));
+        .leftJoin(billiard_tables, eq(reservations.billiard_table_id, billiard_tables.id))
+        .leftJoin(schedules, eq(reservations.schedule_id, schedules.id));
     } catch (error) {
       throw new Error(`Failed to fetch reservations: ${error}`);
     }
@@ -43,8 +48,7 @@ export class ReservationReadRepository {
           guest_name: reservations.guest_name,
           guest_phone: reservations.guest_phone,
           date: reservations.date,
-          start_time: reservations.start_time,
-          end_time: reservations.end_time,
+          schedule_id: reservations.schedule_id,
           guest_count: reservations.guest_count,
           notes: reservations.notes,
           status: reservations.status,
@@ -57,9 +61,15 @@ export class ReservationReadRepository {
             price: billiard_tables.price,
             thumbnail: billiard_tables.thumbnail,
           },
+          schedule: {
+            id: schedules.id,
+            start_time: schedules.start_time,
+            end_time: schedules.end_time,
+          },
         })
         .from(reservations)
         .leftJoin(billiard_tables, eq(reservations.billiard_table_id, billiard_tables.id))
+        .leftJoin(schedules, eq(reservations.schedule_id, schedules.id))
         .where(eq(reservations.id, id))
         .limit(1);
 
