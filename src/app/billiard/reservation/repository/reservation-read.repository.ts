@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { db } from "../../../../db";
-import { reservations, billiard_tables, schedules } from "../../../../db/schema";
+import { reservations, billiard_tables, schedules, payments } from "../../../../db/schema";
 
 export class ReservationReadRepository {
   static async getAll() {
@@ -18,6 +18,8 @@ export class ReservationReadRepository {
           status: reservations.status,
           created_at: reservations.created_at,
           updated_at: reservations.updated_at,
+          payment_status: payments.status,
+          payment_method: payments.method,
           billiard_table: {
             id: billiard_tables.id,
             name: billiard_tables.name,
@@ -33,7 +35,9 @@ export class ReservationReadRepository {
         })
         .from(reservations)
         .leftJoin(billiard_tables, eq(reservations.billiard_table_id, billiard_tables.id))
-        .leftJoin(schedules, eq(reservations.schedule_id, schedules.id));
+        .leftJoin(schedules, eq(reservations.schedule_id, schedules.id))
+        .leftJoin(payments, eq(reservations.id, payments.reservation_id))
+        .orderBy(desc(reservations.created_at));
     } catch (error) {
       throw new Error(`Failed to fetch reservations: ${error}`);
     }
@@ -54,6 +58,8 @@ export class ReservationReadRepository {
           status: reservations.status,
           created_at: reservations.created_at,
           updated_at: reservations.updated_at,
+          payment_status: payments.status,
+          payment_method: payments.method,
           billiard_table: {
             id: billiard_tables.id,
             name: billiard_tables.name,
@@ -70,6 +76,7 @@ export class ReservationReadRepository {
         .from(reservations)
         .leftJoin(billiard_tables, eq(reservations.billiard_table_id, billiard_tables.id))
         .leftJoin(schedules, eq(reservations.schedule_id, schedules.id))
+        .leftJoin(payments, eq(reservations.id, payments.reservation_id))
         .where(eq(reservations.id, id))
         .limit(1);
 

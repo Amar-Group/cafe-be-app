@@ -12,7 +12,6 @@ export class DishOrderDetailReadRepository {
           dish_id: dish_order_details.dish_id,
           quantity: dish_order_details.quantity,
           notes: dish_order_details.notes,
-          status: dish_order_details.status,
           created_at: dish_order_details.created_at,
           updated_at: dish_order_details.updated_at,
           dish: {
@@ -39,7 +38,6 @@ export class DishOrderDetailReadRepository {
           dish_id: dish_order_details.dish_id,
           quantity: dish_order_details.quantity,
           notes: dish_order_details.notes,
-          status: dish_order_details.status,
           created_at: dish_order_details.created_at,
           updated_at: dish_order_details.updated_at,
           dish: {
@@ -70,7 +68,6 @@ export class DishOrderDetailReadRepository {
           dish_id: dish_order_details.dish_id,
           quantity: dish_order_details.quantity,
           notes: dish_order_details.notes,
-          status: dish_order_details.status,
           created_at: dish_order_details.created_at,
           updated_at: dish_order_details.updated_at,
           dish: {

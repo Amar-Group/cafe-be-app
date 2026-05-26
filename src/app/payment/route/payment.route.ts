@@ -11,6 +11,7 @@ import {
   getAllPaymentsRoute,
   getPaymentByIdRoute,
   updatePaymentRoute,
+  midtransWebhookRoute,
 } from "./payment.openapi";
 import { jwtMiddleware } from "../../../middleware/auth";
 import { appTokenMiddleware } from "../../../middleware/appToken";
@@ -20,6 +21,9 @@ import { requirePermission } from "../../../middleware/permission";
 const router = createOpenApiRouter();
 
 registerDefaultSecuritySchemes(router);
+
+// Public webhook route (NO AUTH)
+registerOpenApiRoute(router, midtransWebhookRoute, PaymentController.midtransWebhook);
 
 // Apply middleware globally for all routes in this module
 router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());

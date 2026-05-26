@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { db } from "../../../db";
 import { payments, dish_orders, reservations } from "../../../db/schema";
 
@@ -33,8 +33,6 @@ export class PaymentReadRepository {
             guest_name: reservations.guest_name,
             guest_phone: reservations.guest_phone,
             date: reservations.date,
-            start_time: reservations.start_time,
-            end_time: reservations.end_time,
           },
         })
         .from(payments)
@@ -75,8 +73,6 @@ export class PaymentReadRepository {
             guest_name: reservations.guest_name,
             guest_phone: reservations.guest_phone,
             date: reservations.date,
-            start_time: reservations.start_time,
-            end_time: reservations.end_time,
           },
         })
         .from(payments)
@@ -88,6 +84,20 @@ export class PaymentReadRepository {
       return result[0] || null;
     } catch (error) {
       throw new Error(`Failed to fetch payment: ${error}`);
+    }
+  }
+
+  static async getPendingByDishOrderId(dishOrderId: number) {
+    try {
+      const result = await db
+        .select()
+        .from(payments)
+        .where(and(eq(payments.dish_order_id, dishOrderId), eq(payments.status, "pending")))
+        .limit(1);
+
+      return result[0] || null;
+    } catch (error) {
+      throw new Error(`Failed to fetch pending payment: ${error}`);
     }
   }
 }

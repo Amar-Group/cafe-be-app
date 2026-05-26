@@ -116,3 +116,30 @@ export const deletePaymentRoute = createRoute({
     500: errorResponses[500],
   },
 });
+
+export const midtransWebhookRoute = createRoute({
+  method: "post",
+  path: "/webhook/midtrans",
+  tags,
+  summary: "Midtrans Notification Webhook",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: {}, // accept any object from midtrans
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Webhook processed successfully",
+    },
+    403: {
+      description: "Invalid signature",
+    },
+    500: {
+      description: "Internal server error",
+    },
+  },
+});

@@ -5,7 +5,8 @@ import { payments } from "../../../db/schema";
 export class PaymentWriteRepository {
   static async create(data: any) {
     try {
-      return await db.insert(payments).values(data);
+      const [result] = await db.insert(payments).values(data);
+      return { id: result.insertId };
     } catch (error) {
       throw new Error(`Failed to create payment: ${error}`);
     }

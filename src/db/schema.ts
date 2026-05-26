@@ -156,6 +156,9 @@ export const dish_orders = mysqlTable("dish_orders", {
   tax: decimal({ precision: 14, scale: 2 }).notNull(),
   service_fee: decimal({ precision: 14, scale: 2 }).notNull(),
   nett_price: decimal({ precision: 14, scale: 2 }).notNull(),
+  status: mysqlEnum(["pending", "confirmed", "preparing", "completed", "cancelled"])
+    .default("pending")
+    .notNull(),
   created_at: datetime().default(sql`CURRENT_TIMESTAMP`).notNull(),
   updated_at: datetime().default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
@@ -169,9 +172,6 @@ export const dish_order_details = mysqlTable(
     dish_id: int().notNull(),
     quantity: int().notNull(),
     notes: text(),
-    status: mysqlEnum(["pending", "confirmed", "preparing", "completed", "cancelled"])
-      .default("pending")
-      .notNull(),
     created_at: datetime().default(sql`CURRENT_TIMESTAMP`).notNull(),
     updated_at: datetime().default(sql`CURRENT_TIMESTAMP`).notNull(),
   },

@@ -8,6 +8,10 @@ export const createDishOrderRequestSchema = z
     tax: z.string().min(1).openapi({ example: "11000.00" }),
     service_fee: z.string().min(1).openapi({ example: "5000.00" }),
     nett_price: z.string().min(1).openapi({ example: "116000.00" }),
+    status: z
+      .enum(["pending", "confirmed", "preparing", "completed", "cancelled"])
+      .optional()
+      .openapi({ example: "pending" }),
   })
   .openapi("CreateDishOrderRequest");
 
@@ -19,6 +23,10 @@ export const updateDishOrderRequestSchema = z
     tax: z.string().min(1).optional().openapi({ example: "16500.00" }),
     service_fee: z.string().min(1).optional().openapi({ example: "7500.00" }),
     nett_price: z.string().min(1).optional().openapi({ example: "174000.00" }),
+    status: z
+      .enum(["pending", "confirmed", "preparing", "completed", "cancelled"])
+      .optional()
+      .openapi({ example: "confirmed" }),
   })
   .openapi("UpdateDishOrderRequest");
 
