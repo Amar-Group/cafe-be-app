@@ -8,10 +8,11 @@
 
 Sebelum mengerjakan task apapun, **WAJIB baca `STRUCTURE.md`** untuk memahami:
 - Arsitektur module-based layered
-- Database schema dan relasi
+- Database schema dan relasi (16 tabel)
 - Alur request dan middleware chain
 - Pola coding yang digunakan
 - Sistem RBAC dinamis
+- Integrasi Midtrans payment gateway
 
 ---
 
@@ -26,6 +27,7 @@ Sebelum mengerjakan task apapun, **WAJIB baca `STRUCTURE.md`** untuk memahami:
 | **API Docs** | OpenAPI 3.0.3 + Scalar |
 | **Auth** | JWT (jsonwebtoken) + bcryptjs |
 | **Upload** | Cloudinary (signed upload pattern) |
+| **Payment** | Midtrans (Snap + Core API via `midtrans-client`) |
 | **Deployment** | Vercel (serverless) |
 
 **Penting:**
@@ -148,7 +150,7 @@ export const getAllXxxRoute = createRoute({
 
 ### 4.5 Route Setup
 ```typescript
-import { createOpenApiRouter, registerOpenApiRoute, registerDefaultSecuritySchemes, createModuleOpenApiDocument } from "../../../docs/openapi-common";
+import { createModuleOpenApiDocument, createOpenApiRouter, registerOpenApiRoute, registerDefaultSecuritySchemes } from "../../../docs/openapi-common";
 import { jwtMiddleware } from "../../../middleware/auth";
 import { appTokenMiddleware } from "../../../middleware/appToken";
 import { requirePermission } from "../../../middleware/permission";
@@ -167,6 +169,22 @@ export function getXxxOpenApiDocument(baseUrl: string) {
 }
 
 export default router;
+```
+
+**Pola Hybrid (campuran public + protected):**
+```typescript
+// Contoh: payment module — webhook public, CRUD protected
+const router = createOpenApiRouter();
+registerDefaultSecuritySchemes(router);
+
+// 1. Register PUBLIC routes SEBELUM middleware
+registerOpenApiRoute(router, publicWebhookRoute, Controller.webhook);
+
+// 2. Apply middleware SETELAH public routes
+router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());
+
+// 3. Register PROTECTED routes
+registerOpenApiRoute(router, getAllRoute, Controller.getAll);
 ```
 
 ### 4.6 Controller
@@ -208,6 +226,7 @@ export class XxxController {
 ```
 
 **PENTING:** Controller **TIDAK** boleh punya try-catch manual. Error ditangani oleh global error handler di `middleware/errorHandler.ts`.
+**EXCEPTION:** Webhook handlers (seperti `PaymentController.midtransWebhook`) boleh menggunakan try-catch karena menangani verifikasi signature secara manual.
 
 ### 4.7 Service
 ```typescript
@@ -321,14 +340,14 @@ Setelah membuat 6 layer di atas, jangan lupa:
 
 ## 6. Pola Middleware
 
-### Dua Strategi Middleware:
+### Tiga Strategi Middleware:
 
 **A. Global Module Middleware** (di `*.route.ts`)
 ```typescript
 router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());
 ```
 Gunakan ini ketika **semua endpoint** di module memerlukan auth + permission yang sama.
-Contoh: module `menu`, `role`, `role_permission`.
+Contoh: module `menu`, `role`, `role_permission`, `schedule`, `dish_category`.
 
 **B. Per-Endpoint Middleware** (di `*.openapi.ts`)
 ```typescript
@@ -340,6 +359,18 @@ export const someRoute = createRoute({
 ```
 Gunakan ini ketika module punya campuran endpoint public dan protected.
 Contoh: module `user` (login public, CRUD protected).
+
+**C. Hybrid (Public + Protected di route.ts)**
+```typescript
+// Register public routes SEBELUM middleware
+registerOpenApiRoute(router, publicRoute, Controller.publicHandler);
+// Apply middleware global
+router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());
+// Register protected routes SETELAH middleware
+registerOpenApiRoute(router, protectedRoute, Controller.protectedHandler);
+```
+Gunakan ini ketika module punya webhook atau endpoint public yang tidak memerlukan auth sama sekali.
+Contoh: module `payment` (Midtrans webhook public, CRUD protected).
 
 ---
 
@@ -407,6 +438,7 @@ import {
   jsonResponse,
   writeResultSchema,
   apiErrorResponseSchema,
+  timestampSchema,
 } from "../../../docs/openapi-common";
 
 // Entity schemas (untuk response DTOs)
@@ -414,13 +446,16 @@ import { xxxSchema } from "../../../docs/openapi-schemas";
 
 // Drizzle operators
 import { eq, and, isNull, isNotNull } from "drizzle-orm";
+
+// Midtrans (jika perlu integrasi payment)
+import { snap, coreApi } from "../../../lib/midtrans";
 ```
 
 ---
 
 ## 9. Hal yang TIDAK Boleh Dilakukan
 
-1. ❌ **Jangan** tambahkan try-catch di controller — sudah ditangani global error handler
+1. ❌ **Jangan** tambahkan try-catch di controller — sudah ditangani global error handler *(kecuali webhook handler yang perlu signature verification)*
 2. ❌ **Jangan** validasi manual di controller — sudah ditangani Zod defaultHook
 3. ❌ **Jangan** hardcode permission check — gunakan `requirePermission()` yang dinamis
 4. ❌ **Jangan** gunakan `npm` atau `yarn` — gunakan `bun`

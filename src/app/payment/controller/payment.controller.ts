@@ -6,7 +6,7 @@ import {
 import { PaymentService } from "../service/payment.service";
 import { PaymentReadRepository } from "../repository/payment-read.repository";
 import { PaymentWriteRepository } from "../repository/payment-write.repository";
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 export class PaymentController {
   static async getAll(c: Context) {
