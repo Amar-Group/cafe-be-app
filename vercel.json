@@ -1,12 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "bun install",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/src/index.ts"
-    }
-  ],
   "functions": {
     "src/index.ts": {
       "maxDuration": 60
