@@ -1,6 +1,5 @@
 {
   "name": "hono-backend-starter",
-  "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun src/index.ts",
