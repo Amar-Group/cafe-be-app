@@ -10,6 +10,7 @@ Backend API berbasis **Hono.js** dengan arsitektur **Module-based Layered Archit
 - **Deployment**: Vercel (serverless)
 - **API Docs**: Scalar (via @scalar/hono-api-reference)
 - **Payment Gateway**: Midtrans (Snap + Core API)
+- **WhatsApp API**: Fonnte (untuk notifikasi struk pesanan & reservasi)
 
 ---
 
@@ -89,6 +90,7 @@ cafe-be-app/
 │   │   ├── openapi-schemas.ts      # Reusable entity schemas (Zod → OpenAPI)
 │   │   └── openapi.ts              # Document merger & Scalar setup
 │   ├── lib/                        # Library integrations
+│   │   ├── fonnte.ts               # Fonnte WhatsApp API client
 │   │   └── midtrans.ts             # Midtrans Snap & Core API client
 │   ├── middleware/                  # Global & shared middleware
 │   │   ├── appToken.ts             # X-App-Token validation + request logger
@@ -272,7 +274,7 @@ Setiap module mengikuti **6-layer pattern** yang konsisten:
 **Tiga pola middleware yang digunakan:**
 - **Global di route.ts**: `router.use("*", ...)` → berlaku untuk semua endpoint di module (contoh: menu, role, role_permission, schedule)
 - **Per-endpoint di openapi.ts**: `middleware: [jwtMiddleware, ...] as const` → hanya untuk endpoint tertentu (contoh: user module yang punya login public)
-- **Hybrid (public + protected)**: Register public routes SEBELUM `router.use("*", ...)`, lalu register protected routes setelahnya (contoh: payment module — webhook midtrans public, CRUD protected)
+- **Hybrid (public + protected)**: Register public routes SEBELUM `router.use("*", ...)`, lalu register protected routes setelahnya. Pola ini digunakan pada fitur **Public APIs** (seperti public endpoint untuk `dishes`, `dish_categories`, `billiard_tables`) yang diakses oleh halaman *Landing Page* tanpa token, serta webhook dari pihak ketiga (contoh: payment module — webhook midtrans public).
 
 ### 4. Controller (`controller/*.controller.ts`)
 - **Pattern**: Static class methods
@@ -310,6 +312,25 @@ Permission middleware (`src/middleware/permission.ts`) bekerja secara **dinamis*
 **Implikasi saat menambah module baru:**
 - Harus menambahkan entry di tabel `menus` dengan `permission_path` yang sesuai (contoh: `/api/new-feature`)
 - Harus menambahkan `role_permissions` untuk setiap role yang perlu akses
+
+---
+
+## Integrasi Pihak Ketiga (Third-Party)
+
+Sistem backend ini terhubung dengan dua layanan eksternal utama untuk proses transaksional:
+
+### 1. Midtrans (Payment Gateway)
+- **File Konfigurasi**: `src/lib/midtrans.ts`
+- Digunakan untuk men-generate `snap_token` (QRIS/E-Wallet/Bank Transfer)
+- Memiliki sistem **Webhook** (`/api/payments/webhook`) yang memverifikasi signature key (SHA-512) secara manual untuk memastikan keamanan dan mencegah transaksi duplikat.
+- Mendukung pembaruan otomatis (auto-update status) pada tabel `dish_orders` dan `reservations` ketika pembayaran Midtrans berhasil diselesaikan (`settlement`).
+- Selain Midtrans, juga ada metode pembayaran **Cash** yang otomatis berstatus `paid`.
+
+### 2. Fonnte (WhatsApp API)
+- **File Konfigurasi**: `src/lib/fonnte.ts`
+- Digunakan untuk mengirimkan pesan/notifikasi WhatsApp ke pelanggan ketika transaksi (Pesanan Makanan atau Reservasi) berhasil dibayar (`settled` / `paid`).
+- Dikirimkan secara asinkron di dalam service (saat webhook menerima konfirmasi `settlement` dari Midtrans atau saat kasir memproses metode Cash).
+- Format struk dikirim dalam pesan rapi berbasis teks ke nomor telepon yang telah diinput pengguna (`customer_phone`).
 
 ---
 
