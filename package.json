@@ -4,6 +4,7 @@
     "dev": "bun run --hot src/index.ts",
     "start": "bun src/index.ts",
     "db:generate": "bun drizzle-kit generate",
+    "build": "echo 'Using direct routing via vercel.json'",
     "db:migrate": "bun src/db/migrate.ts",
     "db:push": "bun drizzle-kit push",
     "db:studio": "bun drizzle-kit studio",
