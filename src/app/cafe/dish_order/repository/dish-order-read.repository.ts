@@ -1,6 +1,6 @@
 import { eq, desc } from "drizzle-orm";
 import { db } from "../../../../db";
-import { dish_orders, payments } from "../../../../db/schema";
+import { dish_orders, payments, dish_order_details, dishes } from "../../../../db/schema";
 
 export class DishOrderReadRepository {
   static async getAll() {
@@ -55,6 +55,24 @@ export class DishOrderReadRepository {
       return result[0] || null;
     } catch (error) {
       throw new Error(`Failed to fetch dish order: ${error}`);
+    }
+  }
+
+  static async getOrderDetailsWithDish(dishOrderId: number) {
+    try {
+      const results = await db
+        .select({
+          id: dish_order_details.id,
+          quantity: dish_order_details.quantity,
+          dish_name: dishes.name,
+        })
+        .from(dish_order_details)
+        .leftJoin(dishes, eq(dish_order_details.dish_id, dishes.id))
+        .where(eq(dish_order_details.dish_order_id, dishOrderId));
+        
+      return results;
+    } catch (error) {
+      throw new Error(`Failed to fetch dish order details: ${error}`);
     }
   }
 }

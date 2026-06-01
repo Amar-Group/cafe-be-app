@@ -14,6 +14,10 @@ import { getBilliardTableImageOpenApiDocument } from "../app/billiard/billiard_t
 import { getReservationOpenApiDocument } from "../app/billiard/reservation/route/reservation.route";
 import { getScheduleOpenApiDocument } from "../app/billiard/schedule/route/schedule.route";
 import { getPaymentOpenApiDocument } from "../app/payment/route/payment.route";
+import { getPublicDishCategoryOpenApiDocument } from "../app/public/cafe/dish_category/public-dish-category.route";
+import { getPublicDishOpenApiDocument } from "../app/public/cafe/dish/public-dish.route";
+import { getPublicBilliardTableTypeOpenApiDocument } from "../app/public/billiard/billiard_table_type/public-billiard-table-type.route";
+import { getPublicBilliardTableOpenApiDocument } from "../app/public/billiard/billiard_table/public-billiard-table.route";
 import type { SecurityRequirementObject } from "openapi3-ts/oas30";
 
 type OpenApiDocument = Record<string, any>;
@@ -303,6 +307,14 @@ export function createOpenApiDocument(baseUrl: string) {
       "/api/role-permissions",
     ),
     mountOpenApiPaths(getUploadOpenApiDocument(baseUrl), "/api/uploads"),
+    
+    // Public APIs
+    mountOpenApiPaths(getPublicDishCategoryOpenApiDocument(baseUrl), "/api/public/dish-categories"),
+    mountOpenApiPaths(getPublicDishOpenApiDocument(baseUrl), "/api/public/dishes"),
+    mountOpenApiPaths(getPublicBilliardTableTypeOpenApiDocument(baseUrl), "/api/public/billiard-table-types"),
+    mountOpenApiPaths(getPublicBilliardTableOpenApiDocument(baseUrl), "/api/public/billiard-tables"),
+    
+    // Private APIs
     mountOpenApiPaths(getDishCategoryOpenApiDocument(baseUrl), "/api/dish-categories"),
     mountOpenApiPaths(getDishOpenApiDocument(baseUrl), "/api/dishes"),
     mountOpenApiPaths(getDishImageOpenApiDocument(baseUrl), "/api/dish-images"),

@@ -9,7 +9,9 @@ import {
 export class ReservationWriteRepository {
   static async create(data: CreateReservationRequestDto) {
     try {
-      return await db.insert(reservations).values(data);
+      const payload: any = { ...data };
+      if (payload.date) payload.date = new Date(payload.date);
+      return await db.insert(reservations).values(payload);
     } catch (error) {
       throw new Error(`Failed to create reservation: ${error}`);
     }
@@ -17,10 +19,13 @@ export class ReservationWriteRepository {
 
   static async update(id: number, data: UpdateReservationRequestDto) {
     try {
+      const payload: any = { ...data };
+      if (payload.date) payload.date = new Date(payload.date);
+      
       return await db
         .update(reservations)
         .set({
-          ...data,
+          ...payload,
           updated_at: new Date(),
         })
         .where(eq(reservations.id, id));

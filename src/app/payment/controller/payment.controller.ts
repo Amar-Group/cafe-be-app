@@ -123,7 +123,7 @@ export class PaymentController {
         const paymentId = Number(parts[1]);
         const payment = await PaymentReadRepository.getById(paymentId);
         if (payment && payment.status !== "paid") { // Only update if not already paid
-          await PaymentWriteRepository.update(paymentId, {
+          await PaymentService.update(paymentId, {
             status: paymentStatus,
             paid_at: paymentStatus === "paid" ? new Date().toISOString() : undefined,
           });

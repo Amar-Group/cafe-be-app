@@ -8,6 +8,7 @@ import { PaymentWriteRepository } from "../repository/payment-write.repository";
 import { snap } from "../../../lib/midtrans";
 import { DishOrderWriteRepository } from "../../cafe/dish_order/repository/dish-order-write.repository";
 import { ReservationWriteRepository } from "../../billiard/reservation/repository/reservation-write.repository";
+import { NotificationService } from "../../notification/service/notification.service";
 
 export class PaymentService {
   static async getAll() {
@@ -53,8 +54,10 @@ export class PaymentService {
     if (payload.method === "cash") {
       if (payload.type === "dish_order" && payload.dish_order_id) {
         await DishOrderWriteRepository.update(payload.dish_order_id, { status: "completed" });
+        await NotificationService.sendPaymentSuccessNotification("dish_order", payload.dish_order_id);
       } else if (payload.type === "reservation" && payload.reservation_id) {
         await ReservationWriteRepository.update(payload.reservation_id, { status: "completed" });
+        await NotificationService.sendPaymentSuccessNotification("reservation", payload.reservation_id);
       }
     }
 
@@ -117,8 +120,10 @@ export class PaymentService {
     if (data.status === "paid") {
       if (payment.type === "dish_order" && payment.dish_order_id) {
         await DishOrderWriteRepository.update(payment.dish_order_id, { status: "completed" });
+        await NotificationService.sendPaymentSuccessNotification("dish_order", payment.dish_order_id);
       } else if (payment.type === "reservation" && payment.reservation_id) {
         await ReservationWriteRepository.update(payment.reservation_id, { status: "completed" });
+        await NotificationService.sendPaymentSuccessNotification("reservation", payment.reservation_id);
       }
     }
 

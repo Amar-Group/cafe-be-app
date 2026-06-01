@@ -10,6 +10,11 @@ import rolePermissionRoutes from './app/role_permission/route/role-permission.ro
 import uploadRoutes from './app/upload/route/upload.route';
 import dishCategoryRoutes from './app/cafe/dish_category/route/dish-category.route';
 import dishRoutes from './app/cafe/dish/route/dish.route';
+import publicDishCategoryRoutes from './app/public/cafe/dish_category/public-dish-category.route';
+import publicDishRoutes from './app/public/cafe/dish/public-dish.route';
+import publicBilliardTableTypeRoutes from './app/public/billiard/billiard_table_type/public-billiard-table-type.route';
+import publicBilliardTableRoutes from './app/public/billiard/billiard_table/public-billiard-table.route';
+import publicScheduleRoutes from './app/public/billiard/schedule/public-schedule.route';
 import dishImageRoutes from './app/cafe/dish_image/route/dish-image.route';
 import dishOrderRoutes from './app/cafe/dish_order/route/dish-order.route';
 import dishOrderDetailRoutes from './app/cafe/dish_order_detail/route/dish-order-detail.route';
@@ -73,6 +78,15 @@ app.route('/api/roles', roleRoutes);
 app.route('/api/menus', menuRoutes);
 app.route('/api/role-permissions', rolePermissionRoutes);
 app.route('/api/uploads', uploadRoutes);
+
+// Public API Routes
+app.route('/api/public/dish-categories', publicDishCategoryRoutes);
+app.route('/api/public/dishes', publicDishRoutes);
+app.route('/api/public/billiard-table-types', publicBilliardTableTypeRoutes);
+app.route('/api/public/billiard-tables', publicBilliardTableRoutes);
+app.route('/api/public/schedules', publicScheduleRoutes);
+
+// Private API Routes
 app.route('/api/dish-categories', dishCategoryRoutes);
 app.route('/api/dishes', dishRoutes);
 app.route('/api/dish-images', dishImageRoutes);
