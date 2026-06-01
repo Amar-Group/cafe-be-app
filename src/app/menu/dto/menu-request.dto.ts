@@ -3,11 +3,12 @@ import { createNullableOptionalCoercedIntSchema } from "../../../docs/openapi-co
 
 export const createMenuRequestSchema = z
   .object({
-    name: z.string().min(1).openapi({ example: "Reports" }),
-    path: z.string().min(1).openapi({ example: "/reports" }),
-    permission_path: z.string().nullable().optional().openapi({ example: "/api/reports" }),
-    icon: z.string().nullable().optional().openapi({ example: "ph-chart-bar" }),
-    parent_id: createNullableOptionalCoercedIntSchema(null),
+    name: z.string().min(1).max(100).openapi({ example: "Reports" }),
+    path: z.string().max(255).optional().nullable().openapi({ example: "/reports" }),
+    permission_path: z.string().max(255).optional().nullable().openapi({ example: "/api/reports" }),
+    icon: z.string().max(255).optional().nullable().openapi({ example: "ph-chart-bar" }),
+    is_visible: z.boolean().optional().default(false),
+    parent_id: z.number().int().optional().nullable().openapi({ example: null }),
   })
   .openapi("CreateMenuRequest");
 

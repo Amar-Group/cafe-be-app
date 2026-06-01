@@ -11,6 +11,7 @@ type NavigationMenuRow = {
   name: string;
   path: string;
   icon: string | null;
+  is_visible: boolean | null;
   parent_id: number | null;
 };
 
@@ -27,6 +28,7 @@ const navigationPermissionSelect = {
   name: menus.name,
   path: menus.path,
   icon: menus.icon,
+  is_visible: menus.is_visible,
   parent_id: menus.parent_id,
   can_read: role_permissions.can_read,
   can_create: role_permissions.can_create,
@@ -75,6 +77,7 @@ function buildNavigationTree(
       name: menu.name,
       path: menu.path,
       icon: menu.icon,
+      is_visible: menu.is_visible,
       parent_id: menu.parent_id,
       permissions: {
         can_read: Boolean(permissions?.can_read),

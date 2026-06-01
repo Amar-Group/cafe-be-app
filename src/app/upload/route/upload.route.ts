@@ -13,9 +13,6 @@ const router = createOpenApiRouter();
 
 registerDefaultSecuritySchemes(router);
 
-// Apply middleware globally for all routes in this module
-router.use("*", jwtMiddleware, appTokenMiddleware);
-
 registerOpenApiRoute(
   router,
   createUploadSignatureRoute,
