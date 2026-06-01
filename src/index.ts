@@ -103,6 +103,4 @@ app.route('/api/payments', paymentRoutes);
 app.notFound(notFoundHandler);
 app.onError(errorHandler);
 
-import { handle } from 'hono/vercel';
-
-export default handle(app);
+export default app;
