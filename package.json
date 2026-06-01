@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun src/index.ts",
-    "build": "mkdir -p api && echo \"import { handle } from 'hono/vercel'; import app from '../src/index'; export default handle(app);\" > api/index.ts",
+    "build": "mkdir -p api && echo \"import { handle } from 'hono/vercel'; import app from '../src/index.ts'; export default handle(app);\" > api/index.ts",
     "db:generate": "bun drizzle-kit generate",
     "db:migrate": "bun src/db/migrate.ts",
     "db:push": "bun drizzle-kit push",
