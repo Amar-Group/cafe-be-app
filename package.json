@@ -1,10 +1,11 @@
 {
   "name": "hono-backend-starter",
+  "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun src/index.ts",
+    "build": "mkdir -p api && echo \"import { handle } from 'hono/vercel'; import app from '../src/index'; export default handle(app);\" > api/index.ts",
     "db:generate": "bun drizzle-kit generate",
-    "build": "echo 'Using direct routing via vercel.json'",
     "db:migrate": "bun src/db/migrate.ts",
     "db:push": "bun drizzle-kit push",
     "db:studio": "bun drizzle-kit studio",

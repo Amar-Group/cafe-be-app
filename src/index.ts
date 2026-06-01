@@ -102,4 +102,4 @@ app.route('/api/payments', paymentRoutes);
 app.notFound(notFoundHandler);
 app.onError(errorHandler);
 
-export default handle(app);
+export default app;

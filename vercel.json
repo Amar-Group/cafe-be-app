@@ -1,19 +1,9 @@
 {
   "version": 2,
-  "installCommand": "bun install",
-  "builds": [
+  "rewrites": [
     {
-      "src": "src/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 60
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/index.ts"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ]
 }
