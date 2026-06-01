@@ -6,5 +6,7 @@ import { scheduleSchema } from "../../../../docs/openapi-schemas";
 export type PublicScheduleResponseDto = ScheduleEntity;
 
 export const PublicScheduleListResponseSchema = createSuccessEnvelopeSchema(
-  z.array(scheduleSchema)
-).openapi("PublicScheduleListResponse");
+  "PublicScheduleListResponse",
+  z.array(scheduleSchema),
+  "Public schedules fetched successfully",
+);

@@ -6,5 +6,7 @@ import { billiardTableTypeSchema } from "../../../../docs/openapi-schemas";
 export type PublicBilliardTableTypeResponseDto = BilliardTableTypeEntity;
 
 export const PublicBilliardTableTypeListResponseSchema = createSuccessEnvelopeSchema(
-  z.array(billiardTableTypeSchema)
-).openapi("PublicBilliardTableTypeListResponse");
+  "PublicBilliardTableTypeListResponse",
+  z.array(billiardTableTypeSchema),
+  "Public billiard table types fetched successfully",
+);
