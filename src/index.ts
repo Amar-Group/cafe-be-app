@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
+import { handle } from 'hono/vercel';
 import { loggerMiddleware } from './middleware/appToken';
 import { originGuard, corsMiddleware } from './middleware/originGuard';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler';
@@ -64,9 +65,7 @@ app.get('/openapi.json', (c) => {
 });
 
 app.get('/docs', apiReference({
-  spec: {
-    url: '/openapi.json',
-  },
+  url: '/openapi.json',
 }));
 
 app.route("/api/uploads", uploadRoutes);
@@ -103,4 +102,4 @@ app.route('/api/payments', paymentRoutes);
 app.notFound(notFoundHandler);
 app.onError(errorHandler);
 
-export default app;
+export default handle(app);
