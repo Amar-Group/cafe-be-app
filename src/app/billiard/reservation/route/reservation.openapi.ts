@@ -57,7 +57,7 @@ export const createReservationRoute = createRoute({
   path: "/",
   tags,
   summary: "Create reservation",
-  security: protectedSecurity,
+  security: [],
   request: {
     body: {
       required: true,

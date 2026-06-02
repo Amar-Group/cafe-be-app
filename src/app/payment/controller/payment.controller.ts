@@ -7,6 +7,7 @@ import { PaymentService } from "../service/payment.service";
 import { PaymentReadRepository } from "../repository/payment-read.repository";
 import { PaymentWriteRepository } from "../repository/payment-write.repository";
 import * as crypto from "crypto";
+import { coreApi } from "../../../lib/midtrans";
 
 export class PaymentController {
   static async getAll(c: Context) {
@@ -77,6 +78,69 @@ export class PaymentController {
       data: deleteResult.result,
       message: "Payment deleted successfully",
     });
+  }
+
+  static async syncMidtrans(c: Context) {
+    const id = Number(c.req.param("id"));
+    const payment = await PaymentService.getById(id);
+
+    if (!payment) {
+      return c.json({ success: false, message: "Payment not found" }, 404);
+    }
+
+    if (payment.status === "paid") {
+      return c.json({ success: true, data: payment, message: "Payment already paid" });
+    }
+
+    if (!payment.transaction_id) {
+      return c.json({ success: false, message: "No Midtrans transaction ID found" }, 400);
+    }
+
+    try {
+      const statusResponse = await coreApi.transaction.status(payment.transaction_id);
+      
+      const transactionStatus = statusResponse.transaction_status;
+      const fraudStatus = statusResponse.fraud_status;
+
+      let paymentStatus: "pending" | "paid" | "failed" | "expired" | "cancelled" | "refunded" = "pending";
+
+      if (transactionStatus === "capture") {
+        if (fraudStatus === "challenge") {
+          paymentStatus = "pending";
+        } else if (fraudStatus === "accept") {
+          paymentStatus = "paid";
+        }
+      } else if (transactionStatus === "settlement") {
+        paymentStatus = "paid";
+      } else if (transactionStatus === "cancel" || transactionStatus === "deny" || transactionStatus === "expire") {
+        paymentStatus = transactionStatus === "expire" ? "expired" : "failed";
+      } else if (transactionStatus === "pending") {
+        paymentStatus = "pending";
+      }
+
+      if (paymentStatus === "paid") {
+        await PaymentService.update(id, {
+          status: paymentStatus,
+          paid_at: new Date().toISOString(),
+        });
+      } else if (paymentStatus !== "pending") {
+        await PaymentService.update(id, { status: paymentStatus });
+      }
+
+      const updatedPayment = await PaymentService.getById(id);
+
+      return c.json({
+        success: true,
+        data: updatedPayment,
+        message: "Payment synced successfully",
+      });
+    } catch (e: any) {
+      console.error("Sync Midtrans Error:", e);
+      if (e.message?.includes("404")) {
+         return c.json({ success: false, message: "Transaction not found in Midtrans" }, 404);
+      }
+      return c.json({ success: false, message: "Failed to sync with Midtrans" }, 500);
+    }
   }
 
   static async midtransWebhook(c: Context) {
