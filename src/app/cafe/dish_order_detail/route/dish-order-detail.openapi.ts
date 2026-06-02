@@ -57,7 +57,7 @@ export const createDishOrderDetailRoute = createRoute({
   path: "/",
   tags,
   summary: "Create dish order detail",
-  security: protectedSecurity,
+  security: [],
   request: {
     body: {
       required: true,

@@ -24,7 +24,7 @@ export const getAllReservationsRoute = createRoute({
   path: "/",
   tags,
   summary: "Get all reservations",
-  security: protectedSecurity,
+  security: [],
   responses: {
     200: jsonResponse(reservationListResponseSchema, "Reservations fetched successfully"),
     401: errorResponses[401],
@@ -38,7 +38,7 @@ export const getReservationByIdRoute = createRoute({
   path: "/{id}",
   tags,
   summary: "Get reservation by id",
-  security: protectedSecurity,
+  security: [],
   request: {
     params: reservationIdParamsSchema,
   },
@@ -57,7 +57,7 @@ export const createReservationRoute = createRoute({
   path: "/",
   tags,
   summary: "Create reservation",
-  security: protectedSecurity,
+  security: [],
   request: {
     body: {
       required: true,

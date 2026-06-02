@@ -12,6 +12,7 @@ import {
   getPaymentByIdRoute,
   updatePaymentRoute,
   midtransWebhookRoute,
+  syncPaymentRoute,
 } from "./payment.openapi";
 import { jwtMiddleware } from "../../../middleware/auth";
 import { appTokenMiddleware } from "../../../middleware/appToken";
@@ -22,15 +23,16 @@ const router = createOpenApiRouter();
 
 registerDefaultSecuritySchemes(router);
 
-// Public webhook route (NO AUTH)
+// Public routes (NO AUTH)
 registerOpenApiRoute(router, midtransWebhookRoute, PaymentController.midtransWebhook);
+registerOpenApiRoute(router, createPaymentRoute, PaymentController.create);
+registerOpenApiRoute(router, syncPaymentRoute, PaymentController.syncMidtrans);
 
-// Apply middleware globally for all routes in this module
+// Apply middleware globally for all protected routes in this module
 router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());
 
 registerOpenApiRoute(router, getAllPaymentsRoute, PaymentController.getAll);
 registerOpenApiRoute(router, getPaymentByIdRoute, PaymentController.getById);
-registerOpenApiRoute(router, createPaymentRoute, PaymentController.create);
 registerOpenApiRoute(router, updatePaymentRoute, PaymentController.update);
 registerOpenApiRoute(router, deletePaymentRoute, PaymentController.delete);
 

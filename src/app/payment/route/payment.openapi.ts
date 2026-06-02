@@ -57,7 +57,7 @@ export const createPaymentRoute = createRoute({
   path: "/",
   tags,
   summary: "Create payment",
-  security: protectedSecurity,
+  security: [],
   request: {
     body: {
       required: true,
@@ -141,5 +141,22 @@ export const midtransWebhookRoute = createRoute({
     500: {
       description: "Internal server error",
     },
+  },
+});
+
+export const syncPaymentRoute = createRoute({
+  method: "post",
+  path: "/{id}/sync",
+  tags,
+  summary: "Sync Payment Status with Midtrans",
+  security: [], // Public endpoint for frontend to trigger sync
+  request: {
+    params: paymentIdParamsSchema,
+  },
+  responses: {
+    200: jsonResponse(paymentDetailResponseSchema, "Payment synced successfully"),
+    400: jsonResponse(apiErrorResponseSchema, "Invalid payment id or no transaction ID"),
+    404: jsonResponse(apiErrorResponseSchema, "Payment not found"),
+    500: errorResponses[500],
   },
 });
