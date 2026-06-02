@@ -38,7 +38,7 @@ export const getDishOrderByIdRoute = createRoute({
   path: "/{id}",
   tags,
   summary: "Get dish order by id",
-  security: protectedSecurity,
+  security: [],
   request: {
     params: dishOrderIdParamsSchema,
   },
@@ -57,7 +57,7 @@ export const createDishOrderRoute = createRoute({
   path: "/",
   tags,
   summary: "Create dish order",
-  security: protectedSecurity,
+  security: [],
   request: {
     body: {
       required: true,
