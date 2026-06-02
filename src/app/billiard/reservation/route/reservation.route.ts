@@ -21,13 +21,13 @@ const router = createOpenApiRouter();
 registerDefaultSecuritySchemes(router);
 
 // Public routes (NO AUTH)
+registerOpenApiRoute(router, getAllReservationsRoute, ReservationController.getAll);
 registerOpenApiRoute(router, createReservationRoute, ReservationController.create);
+registerOpenApiRoute(router, getReservationByIdRoute, ReservationController.getById);
 
 // Apply middleware globally for all protected routes in this module
 router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());
 
-registerOpenApiRoute(router, getAllReservationsRoute, ReservationController.getAll);
-registerOpenApiRoute(router, getReservationByIdRoute, ReservationController.getById);
 registerOpenApiRoute(router, updateReservationRoute, ReservationController.update);
 registerOpenApiRoute(router, deleteReservationRoute, ReservationController.delete);
 
