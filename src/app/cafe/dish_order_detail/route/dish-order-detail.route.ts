@@ -20,12 +20,14 @@ const router = createOpenApiRouter();
 
 registerDefaultSecuritySchemes(router);
 
-// Apply middleware globally for all routes in this module
+// Public routes (NO AUTH)
+registerOpenApiRoute(router, createDishOrderDetailRoute, DishOrderDetailController.create);
+
+// Apply middleware globally for all protected routes in this module
 router.use("*", jwtMiddleware, appTokenMiddleware, requirePermission());
 
 registerOpenApiRoute(router, getAllDishOrderDetailsRoute, DishOrderDetailController.getAll);
 registerOpenApiRoute(router, getDishOrderDetailByIdRoute, DishOrderDetailController.getById);
-registerOpenApiRoute(router, createDishOrderDetailRoute, DishOrderDetailController.create);
 registerOpenApiRoute(router, updateDishOrderDetailRoute, DishOrderDetailController.update);
 registerOpenApiRoute(router, deleteDishOrderDetailRoute, DishOrderDetailController.delete);
 
