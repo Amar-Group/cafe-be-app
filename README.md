@@ -87,8 +87,8 @@ bun run db:seed
 
 Default user:
 
-- Admin: `admin@example.com` / `admin123`
-- User: `user@example.com` / `user123`
+- Admin: `admin@example.com` / `password123`
+- User: `user@example.com` / `password123`
 
 Seeder akan mengisi roles, menus, users, dan permission penuh untuk role `ADMIN`.
 
