@@ -64,9 +64,7 @@ app.get('/openapi.json', (c) => {
 });
 
 app.get('/docs', apiReference({
-  spec: {
-    url: '/openapi.json',
-  },
+  url: '/openapi.json',
 }));
 
 app.route("/api/uploads", uploadRoutes);
