@@ -97,7 +97,7 @@ export class PaymentController {
     }
 
     try {
-      const statusResponse = await coreApi.transaction.status(payment.transaction_id);
+      const statusResponse = await (coreApi as any).transaction.status(payment.transaction_id);
       
       const transactionStatus = statusResponse.transaction_status;
       const fraudStatus = statusResponse.fraud_status;
